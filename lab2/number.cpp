@@ -14,6 +14,9 @@ Number::Number()
 
 Number::Number(int tab_length)
 {
+    if (tab_length <= 0) {
+        tab_length = DEFAULT_LENGTH;
+    }
     num_length = 1;
     this->tab_length = tab_length;
     tab_ptr = new int[tab_length];
@@ -59,8 +62,6 @@ void Number::operator=(const int value)
     // Delete previous tab allocation
     delete tab_ptr;
 
-    int digits = 1;
-
     // Set sign and value
     int value_copy;
     if (value < 0) {
@@ -70,6 +71,8 @@ void Number::operator=(const int value)
         is_negative = false;
         value_copy = value;
     }
+
+    int digits = 1;
 
     // Get number of digits in the value
     while (value_copy >= SYSTEM_BASE) {
@@ -82,8 +85,13 @@ void Number::operator=(const int value)
     tab_ptr = new int[tab_length];
 
     // Copy values digits to tab
-    value_copy = value;
-    for (int i = 0; i <= tab_length; i++) {
+    if (value < 0) {
+        value_copy = value * -1;
+    } else {
+        value_copy = value;
+    }
+
+    for (int i = 0; i < tab_length; i++) {
         tab_ptr[i] = value_copy % SYSTEM_BASE;
         value_copy /= SYSTEM_BASE;
     }
@@ -93,6 +101,7 @@ void Number::operator=(const Number& other)
 {
     // Delete previous tab allocation
     delete tab_ptr;
+
     num_length = other.num_length;
     tab_length = other.tab_length;
     is_negative = other.is_negative;
@@ -104,12 +113,14 @@ void Number::operator=(const Number& other)
 
 Number Number::operator+(Number& other)
 {
+    // TODO: ADD SIGN LOGIC
     return addition(*this, other);
 }
 
 Number Number::operator-(Number& other)
 {
-    return Number();
+    bool todo;
+    return subtraction(*this, other, todo);
 }
 
 Number Number::operator*(Number& other)
@@ -120,6 +131,17 @@ Number Number::operator*(Number& other)
 Number Number::operator/(Number& other)
 {
     return Number();
+}
+
+int Number::get_trailing_zeroes()
+{
+    int trailing_zeroes = 0;
+    for (int i = tab_length - 1; i >= 0; i--) {
+        if (tab_ptr[i] != 0) {
+            return trailing_zeroes;
+        }
+        trailing_zeroes++;
+    }
 }
 
 std::string Number::toString()
@@ -143,10 +165,10 @@ Number addition(Number& num1, Number& num2)
     for (int i = 0; i < result.get_tab_length() - 1; i++) {
         int part_sum = 0;
 
-        if (num1.get_num_length() >= i) {
+        if (num1.get_num_length() > i) {
             part_sum += num1.get_tab_ptr()[i];
         }
-        if (num2.get_num_length() >= i) {
+        if (num2.get_num_length() > i) {
             part_sum += num2.get_tab_ptr()[i];
         }
         part_sum += carry;
@@ -170,7 +192,54 @@ Number addition(Number& num1, Number& num2)
     return result;
 }
 
-Number subtraction(Number& number1, Number& number2)
+Number subtraction(Number& num1, Number& num2, bool& change_sign)
 {
-    return Number();
+    Number minuend;
+    Number subtrahend;
+    int borrow = 0;
+
+    if (abs_comp(num1, num2)) {
+        minuend = num1;
+        subtrahend = num2;
+        change_sign = false;
+    } else {
+        minuend = num2;
+        subtrahend = num1;
+        change_sign = true;
+    }
+
+    Number result(minuend.get_num_length());
+
+    for (int i = 0; i < minuend.get_num_length(); i++) {
+        int diff = minuend.get_tab_ptr()[i] - borrow;
+        if (subtrahend.get_num_length() > i) {
+            diff -= subtrahend.get_tab_ptr()[i];
+        }
+        if (diff < 0) {
+            diff += SYSTEM_BASE;
+            borrow = 1;
+        } else {
+            borrow = 0;
+        }
+        result.get_tab_ptr()[i] = diff;
+    }
+
+    result.set_num_length(result.get_tab_length() - result.get_trailing_zeroes());
+
+    return result;
+}
+
+bool abs_comp(Number& num1, Number& num2)
+{
+    if (num1.get_num_length() != num2.get_num_length()) {
+        return num1.get_num_length() > num2.get_num_length();
+    }
+
+    for (int i = num1.get_num_length() - 1; i >= 0; i--) {
+        if (num1.get_tab_ptr()[i] != num2.get_tab_ptr()[i]) {
+            return num1.get_tab_ptr()[i] > num2.get_tab_ptr()[i];
+        }
+    }
+
+    return true;
 }

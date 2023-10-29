@@ -17,6 +17,7 @@ public:
     int get_tab_length();
     int* get_tab_ptr();
     bool get_is_negative();
+    int get_trailing_zeroes();
     // Setters
     void set_num_length(int length);
     // Operators
@@ -29,12 +30,15 @@ public:
     // Other
     std::string toString();
 
+
 private:
     int num_length;
     int tab_length;
     int* tab_ptr;
-    bool is_negative; 
+    bool is_negative;
 };
 
 Number addition(Number& number1, Number& number2);
-Number subtraction(Number& number1, Number& number2);
+Number subtraction(Number& num1, Number& num2, bool& change_sign);
+bool abs_comp(Number& num1, Number& num2);
+
