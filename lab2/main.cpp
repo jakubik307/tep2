@@ -1,7 +1,5 @@
 #include "number.h"
 
-using namespace std;
-
 int main()
 {
     Number num1, num2;

@@ -148,11 +148,39 @@ Number Number::operator-(Number& other)
 
 Number Number::operator*(Number& other)
 {
+    // TODO
     return Number();
 }
 
 Number Number::operator/(Number& other)
 {
+    // TODO
+    return Number();
+}
+
+Number Number::operator+(int other) {
+    Number other_number;
+    other_number = other;
+    return (*this + other_number);
+}
+
+Number Number::operator-(int other)
+{
+    Number other_number;
+    other_number = other;
+    return (*this - other_number);
+}
+
+Number Number::operator*(int other)
+{
+    Number other_number;
+    other_number = other;
+    return (*this * other_number);
+}
+
+Number Number::operator/(int other)
+{
+    // TODO
     return Number();
 }
 
@@ -165,6 +193,7 @@ int Number::get_trailing_zeroes()
         }
         trailing_zeroes++;
     }
+    return trailing_zeroes;
 }
 
 std::string Number::toString()
@@ -255,6 +284,18 @@ Number subtraction(Number& num1, Number& num2, bool& change_sign)
     result.set_num_length(result.get_tab_length() - result.get_trailing_zeroes());
 
     return result;
+}
+
+Number multiplication(Number& num1, Number& num2)
+{
+    // TODO
+    return Number();
+}
+
+Number division(Number& num1, Number& num2)
+{
+    // TODO
+    return Number();
 }
 
 bool abs_comp(Number& num1, Number& num2)

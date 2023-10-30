@@ -2,7 +2,7 @@
 #include <iostream>
 #include <string>
 
-const int DEFAULT_LENGTH = 4;
+const int DEFAULT_LENGTH = 1;
 const int SYSTEM_BASE = 10;
 
 class Number {
@@ -28,6 +28,10 @@ public:
     Number operator-(Number& other);
     Number operator*(Number& other);
     Number operator/(Number& other);
+    Number operator+(int other);
+    Number operator-(int other);
+    Number operator*(int other);
+    Number operator/(int other);
     // Other
     std::string toString();
 
@@ -39,7 +43,9 @@ private:
     bool is_negative;
 };
 
-Number addition(Number& number1, Number& number2);
+Number addition(Number& num1, Number& num2);
 Number subtraction(Number& num1, Number& num2, bool& change_sign);
+Number multiplication(Number& num1, Number& num2);
+Number division(Number& num1, Number& num2);
 bool abs_comp(Number& num1, Number& num2);
 
