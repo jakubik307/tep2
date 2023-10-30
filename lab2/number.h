@@ -20,6 +20,7 @@ public:
     int get_trailing_zeroes();
     // Setters
     void set_num_length(int length);
+    void set_is_negative(bool sign);
     // Operators
     void operator=(const int value);
     void operator=(const Number& other);
