@@ -114,15 +114,12 @@ void Number::operator=(const Number& other)
 Number Number::operator+(Number& other)
 {
     Number result;
-    bool change_sign;
+
     if (this->is_negative == other.is_negative) {
         result = addition(*this, other);
-        if (this->is_negative) {
-            result.set_is_negative(true);
-        } else {
-            result.set_is_negative(false);
-        }
+        result.set_is_negative(this->is_negative);
     } else {
+        bool change_sign;
         result = subtraction(*this, other, change_sign);
         if (!change_sign) {
             result.set_is_negative(this->is_negative);
@@ -136,8 +133,17 @@ Number Number::operator+(Number& other)
 
 Number Number::operator-(Number& other)
 {
-    bool todo;
-    return subtraction(*this, other, todo);
+    Number result;
+    bool change_sign;
+    if (this->is_negative == other.is_negative) {
+        result = subtraction(*this, other, change_sign);
+        result.set_is_negative(change_sign);
+    } else {
+        result = addition(*this, other);
+        result.set_is_negative(abs_comp(other, *this));
+    }
+
+    return result;
 }
 
 Number Number::operator*(Number& other)
@@ -173,7 +179,8 @@ std::string Number::toString()
     return result;
 }
 
-void Number::set_is_negative(bool sign) {
+void Number::set_is_negative(bool sign)
+{
     is_negative = sign;
 }
 
