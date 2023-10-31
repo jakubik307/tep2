@@ -3,7 +3,7 @@
 Number::Number()
 {
     num_length = 1;
-    tab_length = DEFAULT_LENGTH;
+    tab_length = 1;
     tab_ptr = new int[tab_length];
     is_negative = false;
 
@@ -15,7 +15,7 @@ Number::Number()
 Number::Number(int tab_length)
 {
     if (tab_length <= 0) {
-        tab_length = DEFAULT_LENGTH;
+        tab_length = 1;
     }
     num_length = 1;
     this->tab_length = tab_length;
@@ -148,8 +148,11 @@ Number Number::operator-(Number& other)
 
 Number Number::operator*(Number& other)
 {
-    // TODO
-    return Number();
+    Number result;
+    result = multiplication(*this, other);
+    result.set_is_negative((this->is_negative) != (other.is_negative));
+
+    return result;
 }
 
 Number Number::operator/(Number& other)
@@ -158,7 +161,8 @@ Number Number::operator/(Number& other)
     return Number();
 }
 
-Number Number::operator+(int other) {
+Number Number::operator+(int other)
+{
     Number other_number;
     other_number = other;
     return (*this + other_number);
@@ -216,7 +220,6 @@ void Number::set_is_negative(bool sign)
 Number addition(Number& num1, Number& num2)
 {
     Number result(std::max(num1.get_num_length(), num2.get_num_length()) + 1);
-
     int carry = 0;
 
     for (int i = 0; i < result.get_tab_length() - 1; i++) {
@@ -282,14 +285,26 @@ Number subtraction(Number& num1, Number& num2, bool& change_sign)
     }
 
     result.set_num_length(result.get_tab_length() - result.get_trailing_zeroes());
-
     return result;
 }
 
 Number multiplication(Number& num1, Number& num2)
 {
-    // TODO
-    return Number();
+    int result_length = num1.get_num_length() + num2.get_num_length();
+    Number result(result_length);
+
+    for (int i = 0; i < num1.get_num_length(); i++) {
+        int carry = 0;
+        for (int j = 0; j < num2.get_num_length() || carry; j++) {
+            long long product = static_cast<long long>(num1.get_tab_ptr()[i]) * (j < num2.get_num_length() ? num2.get_tab_ptr()[j] : 0);
+            long long temp = static_cast<long long>(result.get_tab_ptr()[i + j]) + product + carry;
+            result.get_tab_ptr()[i + j] = static_cast<int>(temp % SYSTEM_BASE);
+            carry = static_cast<int>(temp / SYSTEM_BASE);
+        }
+    }
+
+    result.set_num_length(result.get_tab_length() - result.get_trailing_zeroes());
+    return result;
 }
 
 Number division(Number& num1, Number& num2)
