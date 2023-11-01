@@ -299,14 +299,15 @@ Number multiplication(Number& num1, Number& num2)
     Number result(result_length);
     Number temp;
     Number carry;
+    Number product;
 
     for (int i = 0; i < num1.num_length; i++) {
         carry = 0;
         for (int j = 0; j < num2.num_length || !(carry.num_length == 1 && carry.tab_ptr[0] == 0); j++) {
-            int product = result.tab_ptr[i + j] + (i < num1.num_length ? num1.tab_ptr[i] : 0) * (j < num2.num_length ? num2.tab_ptr[j] : 0);
-            product = product + carry.toInt();
+            product = result.tab_ptr[i + j] + (i < num1.num_length ? num1.tab_ptr[i] : 0) * (j < num2.num_length ? num2.tab_ptr[j] : 0);
+            product = product + carry;
 
-            result.tab_ptr[i + j] = product % SYSTEM_BASE;
+            result.tab_ptr[i + j] = (product % SYSTEM_BASE).toInt();
             carry = product / SYSTEM_BASE;
         }
     }
