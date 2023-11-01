@@ -38,6 +38,7 @@ private:
     int tab_length;
     int* tab_ptr;
     bool is_negative;
+    void copyFrom(const Number& other);
 
     friend Number addition(Number& num1, Number& num2);
     friend Number subtraction(Number& num1, Number& num2, bool& change_sign);

@@ -14,16 +14,7 @@ Number::Number()
 
 Number::Number(const Number& other)
 {
-    // Delete previous tab allocation
-    delete other.tab_ptr;
-
-    num_length = other.num_length;
-    tab_length = other.tab_length;
-    is_negative = other.is_negative;
-    tab_ptr = new int[tab_length];
-    for (int i = 0; i < tab_length; i++) {
-        tab_ptr[i] = other.tab_ptr[i];
-    }
+    copyFrom(other);
 }
 
 Number::Number(int tab_length)
@@ -97,16 +88,7 @@ void Number::operator=(const int value)
 
 void Number::operator=(const Number& other)
 {
-    // Delete previous tab allocation
-    delete tab_ptr;
-
-    num_length = other.num_length;
-    tab_length = other.tab_length;
-    is_negative = other.is_negative;
-    tab_ptr = new int[tab_length];
-    for (int i = 0; i < tab_length; i++) {
-        tab_ptr[i] = other.tab_ptr[i];
-    }
+    copyFrom(other);
 }
 
 Number Number::operator+(Number& other)
@@ -423,4 +405,18 @@ int abs_comp(Number& num1, Number& num2)
     }
 
     return 0;
+}
+
+void Number::copyFrom(const Number& other)
+{
+    // Delete previous tab allocation
+    delete tab_ptr;
+
+    this->num_length = other.num_length;
+    this->tab_length = other.tab_length;
+    this->is_negative = other.is_negative;
+    this->tab_ptr = new int[other.tab_length];
+    for (int i = 0; i < other.tab_length; i++) {
+        this->tab_ptr[i] = other.tab_ptr[i];
+    }
 }
