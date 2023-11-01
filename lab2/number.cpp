@@ -12,6 +12,20 @@ Number::Number()
     }
 }
 
+Number::Number(const Number& other)
+{
+    // Delete previous tab allocation
+    delete other.tab_ptr;
+
+    num_length = other.num_length;
+    tab_length = other.tab_length;
+    is_negative = other.is_negative;
+    tab_ptr = new int[tab_length];
+    for (int i = 0; i < tab_length; i++) {
+        tab_ptr[i] = other.tab_ptr[i];
+    }
+}
+
 Number::Number(int tab_length)
 {
     if (tab_length <= 0) {
@@ -33,23 +47,11 @@ Number::~Number()
     delete tab_ptr;
 }
 
-int Number::get_num_length()
-{
-    return num_length;
-}
-
-int Number::get_tab_length()
-{
-    return tab_length;
-}
-
-int* Number::get_tab_ptr()
-{
-    return tab_ptr;
-}
-
 void Number::set_num_length(int length)
 {
+    if (length <= 0) {
+        length = 1;
+    }
     num_length = length;
 }
 
@@ -113,15 +115,11 @@ Number Number::operator+(Number& other)
 
     if (this->is_negative == other.is_negative) {
         result = addition(*this, other);
-        result.set_is_negative(this->is_negative);
+        result.is_negative = this->is_negative;
     } else {
         bool change_sign;
         result = subtraction(*this, other, change_sign);
-        if (change_sign) {
-            result.set_is_negative(other.is_negative);
-        } else {
-            result.set_is_negative(this->is_negative);
-        }
+        result.is_negative = change_sign ? other.is_negative : this->is_negative;
     }
 
     return result;
@@ -133,10 +131,10 @@ Number Number::operator-(Number& other)
     bool change_sign;
     if (this->is_negative == other.is_negative) {
         result = subtraction(*this, other, change_sign);
-        result.set_is_negative(change_sign);
+        result.is_negative = change_sign;
     } else {
         result = addition(*this, other);
-        result.set_is_negative(abs_comp(*this, other) == -1);
+        result.is_negative = abs_comp(*this, other) == -1;
     }
 
     return result;
@@ -146,7 +144,7 @@ Number Number::operator*(Number& other)
 {
     Number result;
     result = multiplication(*this, other);
-    result.set_is_negative(this->is_negative != other.is_negative);
+    result.is_negative = this->is_negative != other.is_negative;
 
     return result;
 }
@@ -155,7 +153,15 @@ Number Number::operator/(Number& other)
 {
     Number result;
     result = division(*this, other);
-    result.set_is_negative(this->is_negative != other.is_negative);
+    result.is_negative = this->is_negative != other.is_negative;
+
+    return result;
+}
+
+Number Number::operator%(Number& other)
+{
+    Number result;
+    result = modulo(*this, other);
 
     return result;
 }
@@ -188,6 +194,13 @@ Number Number::operator/(int other)
     return (*this / other_number);
 }
 
+Number Number::operator%(int other)
+{
+    Number other_number;
+    other_number = other;
+    return (*this % other_number);
+}
+
 int Number::get_trailing_zeroes()
 {
     int trailing_zeroes = 0;
@@ -212,24 +225,31 @@ std::string Number::toString()
     return result;
 }
 
-void Number::set_is_negative(bool sign)
+int Number::toInt()
 {
-    is_negative = sign;
+    int result = 0;
+
+    for (int i = num_length - 1; i >= 0; i--) {
+        result *= SYSTEM_BASE;
+        result += tab_ptr[i];
+    }
+
+    return result;
 }
 
 Number addition(Number& num1, Number& num2)
 {
-    Number result(std::max(num1.get_num_length(), num2.get_num_length()) + 1);
+    Number result(std::max(num1.num_length, num2.num_length) + 1);
     int carry = 0;
 
-    for (int i = 0; i < result.get_tab_length() - 1; i++) {
+    for (int i = 0; i < result.tab_length - 1; i++) {
         int part_sum = 0;
 
-        if (num1.get_num_length() > i) {
-            part_sum += num1.get_tab_ptr()[i];
+        if (num1.num_length > i) {
+            part_sum += num1.tab_ptr[i];
         }
-        if (num2.get_num_length() > i) {
-            part_sum += num2.get_tab_ptr()[i];
+        if (num2.num_length > i) {
+            part_sum += num2.tab_ptr[i];
         }
         part_sum += carry;
         carry = 0;
@@ -239,14 +259,14 @@ Number addition(Number& num1, Number& num2)
             part_sum -= SYSTEM_BASE;
         }
 
-        result.get_tab_ptr()[i] = part_sum;
+        result.tab_ptr[i] = part_sum;
     }
 
     if (carry == 1) {
-        result.get_tab_ptr()[result.get_tab_length() - 1] = 1;
-        result.set_num_length(result.get_tab_length());
+        result.tab_ptr[result.tab_length - 1] = 1;
+        result.set_num_length(result.tab_length);
     } else {
-        result.set_num_length(result.get_tab_length() - 1);
+        result.set_num_length(result.tab_length - 1);
     }
 
     return result;
@@ -271,12 +291,12 @@ Number subtraction(Number& num1, Number& num2, bool& change_sign)
         change_sign = true;
     }
 
-    result = Number(minuend.get_num_length());
+    result = Number(minuend.num_length);
 
-    for (int i = 0; i < minuend.get_num_length(); i++) {
-        int diff = minuend.get_tab_ptr()[i] - borrow;
-        if (subtrahend.get_num_length() > i) {
-            diff -= subtrahend.get_tab_ptr()[i];
+    for (int i = 0; i < minuend.num_length; i++) {
+        int diff = minuend.tab_ptr[i] - borrow;
+        if (subtrahend.num_length > i) {
+            diff -= subtrahend.tab_ptr[i];
         }
         if (diff < 0) {
             diff += SYSTEM_BASE;
@@ -284,46 +304,54 @@ Number subtraction(Number& num1, Number& num2, bool& change_sign)
         } else {
             borrow = 0;
         }
-        result.get_tab_ptr()[i] = diff;
+        result.tab_ptr[i] = diff;
     }
 
-    result.set_num_length(result.get_tab_length() - result.get_trailing_zeroes());
+    result.set_num_length(result.tab_length - result.get_trailing_zeroes());
     return result;
 }
 
 Number multiplication(Number& num1, Number& num2)
 {
-    int result_length = num1.get_num_length() + num2.get_num_length();
+    int result_length = num1.num_length + num2.num_length;
     Number result(result_length);
+    Number product;
+    Number carry;
+    Number temp;
 
-    for (int i = 0; i < num1.get_num_length(); i++) {
-        long long carry = 0;
-        for (int j = 0; j < num2.get_num_length() || carry; j++) {
-            long long product = static_cast<long long>(num1.get_tab_ptr()[i]) * (j < num2.get_num_length() ? num2.get_tab_ptr()[j] : 0);
-            long long temp = static_cast<long long>(result.get_tab_ptr()[i + j]) + product + carry;
-            result.get_tab_ptr()[i + j] = static_cast<int>(temp % SYSTEM_BASE);
+    for (int i = 0; i < num1.num_length; i++) {
+        carry = 0;
+        // Iterate over num2 digits or when carry is not 0
+        for (int j = 0; j < num2.num_length || carry.num_length != 1 || carry.tab_ptr[1] != 0; j++) {
+            product = (num1.tab_ptr[i]) * (j < num2.num_length ? num2.tab_ptr[j] : 0);
+
+            temp = (result.tab_ptr[i + j]);
+            temp = temp + product;
+            temp = temp + carry;
+
+            result.tab_ptr[i + j] = (temp % SYSTEM_BASE).toInt();
             carry = temp / SYSTEM_BASE;
         }
     }
 
-    result.set_num_length(result.get_tab_length() - result.get_trailing_zeroes());
+    result.set_num_length(result.tab_length - result.get_trailing_zeroes());
     return result;
 }
 
 Number division(Number& num1, Number& num2)
 {
-    Number result(num1.get_num_length());
+    Number result;
     Number dividend;
     Number divisor;
     divisor = num2;
-    divisor.set_is_negative(false);
+    divisor.is_negative = false;
 
     // Division by 0 case
-    if (num2.get_num_length() == 1 && num2.get_tab_ptr()[0] == 0) {
+    if (num2.num_length == 1 && num2.tab_ptr[0] == 0) {
         return result;
     }
 
-    // Result equal 1 case
+    // Result equal 0 case
     if (abs_comp(num1, num2) == -1) {
         return result;
     }
@@ -334,29 +362,63 @@ Number division(Number& num1, Number& num2)
         return result;
     }
 
-    for (int i = num1.get_num_length() - 1; i >= 0; i--) {
-        dividend = dividend * SYSTEM_BASE + num1.get_tab_ptr()[i];
+    result = Number(num1.num_length);
+
+    for (int i = num1.num_length - 1; i >= 0; i--) {
+        dividend = dividend * SYSTEM_BASE + num1.tab_ptr[i];
         int quotient_digit = 0;
         while (abs_comp(dividend, num2) != -1) {
             dividend = dividend - divisor;
             quotient_digit++;
         }
-        result.get_tab_ptr()[i] = quotient_digit;
+        result.tab_ptr[i] = quotient_digit;
     }
 
-    result.set_num_length(result.get_tab_length() - result.get_trailing_zeroes());
+    result.set_num_length(result.tab_length - result.get_trailing_zeroes());
+    return result;
+}
+
+Number modulo(Number& num1, Number& num2)
+{
+    Number result(1);
+    Number dividend;
+    dividend = num1;
+    dividend.is_negative = false;
+
+    // Division by 0 case
+    if (num2.num_length == 1 && num2.tab_ptr[0] == 0) {
+        return result;
+    }
+
+    // Result equal dividend case
+    if (abs_comp(num1, num2) == -1) {
+        result = dividend;
+        return result;
+    }
+
+    // Result equal 0 case
+    if (abs_comp(num1, num2) == 0) {
+        return result;
+    }
+
+    while (abs_comp(dividend, num2) != -1) {
+        dividend = dividend - num2;
+    }
+
+    result = dividend;
+    result.set_num_length(result.tab_length - result.get_trailing_zeroes());
     return result;
 }
 
 int abs_comp(Number& num1, Number& num2)
 {
-    if (num1.get_num_length() != num2.get_num_length()) {
-        return (num1.get_num_length() > num2.get_num_length() ? 1 : -1);
+    if (num1.num_length != num2.num_length) {
+        return (num1.num_length > num2.num_length ? 1 : -1);
     }
 
-    for (int i = num1.get_num_length() - 1; i >= 0; i--) {
-        if (num1.get_tab_ptr()[i] != num2.get_tab_ptr()[i]) {
-            return (num1.get_tab_ptr()[i] > num2.get_tab_ptr()[i] ? 1 : -1);
+    for (int i = num1.num_length - 1; i >= 0; i--) {
+        if (num1.tab_ptr[i] != num2.tab_ptr[i]) {
+            return (num1.tab_ptr[i] > num2.tab_ptr[i] ? 1 : -1);
         }
     }
 

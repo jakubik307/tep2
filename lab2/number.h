@@ -8,17 +8,14 @@ class Number {
 public:
     // Constructors
     Number();
+    Number(const Number& other);
     Number(int tab_length);
     // Destructor
     ~Number();
     // Getters
-    int get_num_length();
-    int get_tab_length();
-    int* get_tab_ptr();
     int get_trailing_zeroes();
     // Setters
     void set_num_length(int length);
-    void set_is_negative(bool sign);
     // Operators
     void operator=(const int value);
     void operator=(const Number& other);
@@ -26,11 +23,14 @@ public:
     Number operator-(Number& other);
     Number operator*(Number& other);
     Number operator/(Number& other);
+    Number operator%(Number& other);
     Number operator+(int other);
     Number operator-(int other);
     Number operator*(int other);
     Number operator/(int other);
+    Number operator%(int other);
     // Other
+    int toInt();
     std::string toString();
 
 private:
@@ -38,10 +38,11 @@ private:
     int tab_length;
     int* tab_ptr;
     bool is_negative;
-};
 
-Number addition(Number& num1, Number& num2);
-Number subtraction(Number& num1, Number& num2, bool& change_sign);
-Number multiplication(Number& num1, Number& num2);
-Number division(Number& num1, Number& num2);
-int abs_comp(Number& num1, Number& num2);
+    friend Number addition(Number& num1, Number& num2);
+    friend Number subtraction(Number& num1, Number& num2, bool& change_sign);
+    friend Number multiplication(Number& num1, Number& num2);
+    friend Number division(Number& num1, Number& num2);
+    friend Number modulo(Number& num1, Number& num2);
+    friend int abs_comp(Number& num1, Number& num2);
+};
