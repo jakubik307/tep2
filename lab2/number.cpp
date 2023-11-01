@@ -314,6 +314,9 @@ Number division(Number& num1, Number& num2)
 {
     Number result(num1.get_num_length());
     Number dividend;
+    Number divisor;
+    divisor = num2;
+    divisor.set_is_negative(false);
 
     // Division by 0 case
     if (num2.get_num_length() == 1 && num2.get_tab_ptr()[0] == 0) {
@@ -335,7 +338,7 @@ Number division(Number& num1, Number& num2)
         dividend = dividend * SYSTEM_BASE + num1.get_tab_ptr()[i];
         int quotient_digit = 0;
         while (abs_comp(dividend, num2) != -1) {
-            dividend = dividend - num2;
+            dividend = dividend - divisor;
             quotient_digit++;
         }
         result.get_tab_ptr()[i] = quotient_digit;

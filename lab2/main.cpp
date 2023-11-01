@@ -3,7 +3,7 @@
 int main()
 {
     Number num1, num2;
-    num1 = 369;
+    num1 = -369;
     num2 = 3;
 
     std::cout << num1.toString() << std::endl;
