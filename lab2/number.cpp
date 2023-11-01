@@ -297,22 +297,17 @@ Number multiplication(Number& num1, Number& num2)
 {
     int result_length = num1.num_length + num2.num_length;
     Number result(result_length);
-    Number product;
-    Number carry;
     Number temp;
+    Number carry;
 
     for (int i = 0; i < num1.num_length; i++) {
         carry = 0;
-        // Iterate over num2 digits or when carry is not 0
-        for (int j = 0; j < num2.num_length || carry.num_length != 1 || carry.tab_ptr[1] != 0; j++) {
-            product = (num1.tab_ptr[i]) * (j < num2.num_length ? num2.tab_ptr[j] : 0);
+        for (int j = 0; j < num2.num_length || !(carry.num_length == 1 && carry.tab_ptr[0] == 0); j++) {
+            int product = result.tab_ptr[i + j] + (i < num1.num_length ? num1.tab_ptr[i] : 0) * (j < num2.num_length ? num2.tab_ptr[j] : 0);
+            product = product + carry.toInt();
 
-            temp = (result.tab_ptr[i + j]);
-            temp = temp + product;
-            temp = temp + carry;
-
-            result.tab_ptr[i + j] = (temp % SYSTEM_BASE).toInt();
-            carry = temp / SYSTEM_BASE;
+            result.tab_ptr[i + j] = product % SYSTEM_BASE;
+            carry = product / SYSTEM_BASE;
         }
     }
 
