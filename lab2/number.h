@@ -15,7 +15,6 @@ public:
     int get_num_length();
     int get_tab_length();
     int* get_tab_ptr();
-    bool get_is_negative();
     int get_trailing_zeroes();
     // Setters
     void set_num_length(int length);
@@ -45,4 +44,4 @@ Number addition(Number& num1, Number& num2);
 Number subtraction(Number& num1, Number& num2, bool& change_sign);
 Number multiplication(Number& num1, Number& num2);
 Number division(Number& num1, Number& num2);
-bool abs_comp(Number& num1, Number& num2);
+int abs_comp(Number& num1, Number& num2);
