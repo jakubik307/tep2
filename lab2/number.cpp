@@ -447,3 +447,27 @@ void Number::copyFrom(const Number& other)
         this->tab_ptr[i] = other.tab_ptr[i];
     }
 }
+
+Number operator+(int lhs, Number &rhs) {
+    Number lhsNumber;
+    lhsNumber = lhs;
+    return lhsNumber + rhs;
+}
+
+Number operator-(int lhs, Number &rhs) {
+    Number lhsNumber;
+    lhsNumber = lhs;
+    return lhsNumber - rhs;
+}
+
+Number operator*(int lhs, Number &rhs) {
+    Number lhsNumber;
+    lhsNumber = lhs;
+    return lhsNumber * rhs;
+}
+
+Number operator/(int lhs, Number &rhs) {
+    Number lhsNumber;
+    lhsNumber = lhs;
+    return lhsNumber / rhs;
+}

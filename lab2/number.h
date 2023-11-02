@@ -50,4 +50,8 @@ private:
     friend Number division(Number& num1, Number& num2);
     friend Number modulo(Number& num1, Number& num2);
     friend int abs_comp(Number& num1, Number& num2);
+    friend Number operator+(int lhs, Number& rhs);
+    friend Number operator-(int lhs, Number& rhs);
+    friend Number operator*(int lhs, Number& rhs);
+    friend Number operator/(int lhs, Number& rhs);
 };
