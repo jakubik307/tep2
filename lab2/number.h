@@ -24,11 +24,15 @@ public:
     Number operator*(Number& other);
     Number operator/(Number& other);
     Number operator%(Number& other);
+    bool operator==(Number& other);
+    bool operator!=(Number& other);
     Number operator+(int other);
     Number operator-(int other);
     Number operator*(int other);
     Number operator/(int other);
     Number operator%(int other);
+    bool operator==(int other);
+    bool operator!=(int other);
     // Other
     int toInt();
     std::string toString();

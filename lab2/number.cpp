@@ -151,6 +151,25 @@ Number Number::operator%(Number& other)
     return result;
 }
 
+bool Number::operator==(Number &other) {
+    if (this->num_length != other.num_length) {
+        return false;
+    }
+    if (this->is_negative != other.is_negative) {
+        return false;
+    }
+    for (int i = 0; i < this->num_length; i++) {
+        if (this->tab_ptr[i] != other.tab_ptr[i]) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool Number::operator!=(Number &other) {
+    return !(*this == other);
+}
+
 Number Number::operator+(int other)
 {
     Number other_number;
@@ -184,6 +203,18 @@ Number Number::operator%(int other)
     Number other_number;
     other_number = other;
     return (*this % other_number);
+}
+
+bool Number::operator==(int other) {
+    Number other_number;
+    other_number = other;
+    return (*this == other_number);
+}
+
+bool Number::operator!=(int other) {
+    Number other_number;
+    other_number = other;
+    return (*this != other_number);
 }
 
 int Number::get_trailing_zeroes()
