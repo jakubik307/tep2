@@ -9,7 +9,8 @@ public:
     // Constructors
     Number();
     Number(const Number& other);
-    Number(int tab_length);
+    Number(int value);
+    Number(int value, int length);
     // Destructor
     ~Number();
     // Getters
@@ -17,7 +18,7 @@ public:
     // Setters
     void set_num_length(int length);
     // Operators
-    void operator=(const int value);
+    void operator=(int value);
     void operator=(const Number& other);
     Number operator+(Number& other);
     Number operator-(Number& other);
@@ -43,6 +44,7 @@ private:
     int* tab_ptr;
     bool is_negative;
     void copyFrom(const Number& other);
+    void assignValue(int value, int min_length);
 
     friend Number addition(Number& num1, Number& num2);
     friend Number subtraction(Number& num1, Number& num2, bool& change_sign);

@@ -17,20 +17,16 @@ Number::Number(const Number& other)
     copyFrom(other);
 }
 
-Number::Number(int tab_length)
+Number::Number(int value)
 {
-    if (tab_length <= 0) {
-        tab_length = 1;
-    }
+    Number value_number;
+    value_number = value;
+    copyFrom(value_number);
+}
 
-    num_length = 1;
-    this->tab_length = tab_length;
-    tab_ptr = new int[tab_length];
-    is_negative = false;
-
-    for (int i = 0; i < tab_length; i++) {
-        tab_ptr[i] = 0;
-    }
+Number::Number(int value, int tab_length)
+{
+    assignValue(value, tab_length);
 }
 
 Number::~Number()
@@ -46,44 +42,11 @@ void Number::set_num_length(int length)
     num_length = length;
 }
 
-void Number::operator=(const int value)
+void Number::operator=(int value)
 {
     // Delete previous tab allocation
     delete[] tab_ptr;
-
-    // Set sign and value
-    int value_copy;
-    if (value < 0) {
-        is_negative = true;
-        value_copy = value * -1;
-    } else {
-        is_negative = false;
-        value_copy = value;
-    }
-
-    int digits = 1;
-
-    // Get number of digits in the value
-    while (value_copy >= SYSTEM_BASE) {
-        value_copy /= SYSTEM_BASE;
-        digits++;
-    }
-
-    tab_length = digits;
-    num_length = digits;
-    tab_ptr = new int[tab_length];
-
-    // Copy values digits to tab
-    if (value < 0) {
-        value_copy = value * -1;
-    } else {
-        value_copy = value;
-    }
-
-    for (int i = 0; i < tab_length; i++) {
-        tab_ptr[i] = value_copy % SYSTEM_BASE;
-        value_copy /= SYSTEM_BASE;
-    }
+    assignValue(value, 1);
 }
 
 void Number::operator=(const Number& other)
@@ -106,7 +69,6 @@ Number Number::operator+(Number& other)
         result = subtraction(*this, other, change_sign);
         result.is_negative = change_sign ? other.is_negative : this->is_negative;
     }
-
     return result;
 }
 
@@ -114,6 +76,7 @@ Number Number::operator-(Number& other)
 {
     Number result;
     bool change_sign;
+
     if (this->is_negative == other.is_negative) {
         result = subtraction(*this, other, change_sign);
         result.is_negative = change_sign;
@@ -121,7 +84,6 @@ Number Number::operator-(Number& other)
         result = addition(*this, other);
         result.is_negative = abs_comp(*this, other) == -1;
     }
-
     return result;
 }
 
@@ -130,7 +92,6 @@ Number Number::operator*(Number& other)
     Number result;
     result = multiplication(*this, other);
     result.is_negative = this->is_negative != other.is_negative;
-
     return result;
 }
 
@@ -139,7 +100,6 @@ Number Number::operator/(Number& other)
     Number result;
     result = division(*this, other);
     result.is_negative = this->is_negative != other.is_negative;
-
     return result;
 }
 
@@ -259,7 +219,7 @@ int Number::toInt()
 
 Number addition(Number& num1, Number& num2)
 {
-    Number result(std::max(num1.num_length, num2.num_length) + 1);
+    Number result(0, std::max(num1.num_length, num2.num_length) + 1);
     int carry = 0;
 
     for (int i = 0; i < result.tab_length - 1; i++) {
@@ -311,7 +271,7 @@ Number subtraction(Number& num1, Number& num2, bool& change_sign)
         change_sign = true;
     }
 
-    result = Number(minuend.num_length);
+    result = Number(0, minuend.num_length);
 
     for (int i = 0; i < minuend.num_length; i++) {
         int diff = minuend.tab_ptr[i] - borrow;
@@ -334,7 +294,7 @@ Number subtraction(Number& num1, Number& num2, bool& change_sign)
 Number multiplication(Number& num1, Number& num2)
 {
     int result_length = num1.num_length + num2.num_length;
-    Number result(result_length);
+    Number result(0, result_length);
     Number temp;
     Number carry;
     Number product;
@@ -378,7 +338,7 @@ Number division(Number& num1, Number& num2)
         return result;
     }
 
-    result = Number(num1.num_length);
+    result = Number(0,num1.num_length);
 
     for (int i = num1.num_length - 1; i >= 0; i--) {
         dividend = dividend * SYSTEM_BASE + num1.tab_ptr[i];
@@ -396,7 +356,7 @@ Number division(Number& num1, Number& num2)
 
 Number modulo(Number& num1, Number& num2)
 {
-    Number result(1);
+    Number result;
     Number dividend;
     dividend = num1;
     dividend.is_negative = false;
@@ -478,4 +438,41 @@ Number operator/(int lhs, Number& rhs)
     Number lhsNumber;
     lhsNumber = lhs;
     return lhsNumber / rhs;
+}
+
+void Number::assignValue(int value, int min_length)
+{
+    // Set sign and value
+    int abs_value;
+    if (value < 0) {
+        is_negative = true;
+        abs_value = value * -1;
+    } else {
+        is_negative = false;
+        abs_value = value;
+    }
+
+    int digits = 1;
+
+    // Get number of digits in the value
+    while (abs_value >= SYSTEM_BASE) {
+        abs_value /= SYSTEM_BASE;
+        digits++;
+    }
+
+    tab_length = std::max(digits, min_length);
+    num_length = digits;
+    tab_ptr = new int[tab_length];
+
+    // Copy values digits to tab
+    if (value < 0) {
+        abs_value = value * -1;
+    } else {
+        abs_value = value;
+    }
+
+    for (int i = 0; i < tab_length; i++) {
+        tab_ptr[i] = abs_value % SYSTEM_BASE;
+        abs_value /= SYSTEM_BASE;
+    }
 }
