@@ -10,11 +10,10 @@ int main()
     std::cout << num2.toString() << std::endl;
 
     Number num3 = 21;
-
-    Number num4(48, 12);
+    Number num4 = num3;
 
     std::cout << num3.toString() << std::endl;
     std::cout << num4.toString() << std::endl;
-    std::cout << (num3 == num4) << std::endl;
+    std::cout << (21 == num3) << std::endl;
     return 0;
 }

@@ -52,6 +52,7 @@ void Number::operator=(int value)
 void Number::operator=(const Number& other)
 {
     if (this != &other) {
+        // Delete previous tab allocation
         delete[] tab_ptr;
         copyFrom(other);
     }
@@ -338,7 +339,7 @@ Number division(Number& num1, Number& num2)
         return result;
     }
 
-    result = Number(0, num1.num_length);
+    result = Number(0,num1.num_length);
 
     for (int i = num1.num_length - 1; i >= 0; i--) {
         dividend = dividend * SYSTEM_BASE + num1.tab_ptr[i];
@@ -438,6 +439,18 @@ Number operator/(int lhs, Number& rhs)
     Number lhsNumber;
     lhsNumber = lhs;
     return lhsNumber / rhs;
+}
+
+bool operator==(int lhs, Number &rhs) {
+    Number lhsNumber;
+    lhsNumber = lhs;
+    return lhsNumber == rhs;
+}
+
+bool operator!=(int lhs, Number &rhs) {
+    Number lhsNumber;
+    lhsNumber = lhs;
+    return lhsNumber != rhs;
 }
 
 void Number::assignValue(int value, int min_length)

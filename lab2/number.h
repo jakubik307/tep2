@@ -56,4 +56,6 @@ private:
     friend Number operator-(int lhs, Number& rhs);
     friend Number operator*(int lhs, Number& rhs);
     friend Number operator/(int lhs, Number& rhs);
+    friend bool operator==(int lhs, Number& rhs);
+    friend bool operator!=(int lhs, Number& rhs);
 };
