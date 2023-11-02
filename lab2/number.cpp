@@ -151,7 +151,8 @@ Number Number::operator%(Number& other)
     return result;
 }
 
-bool Number::operator==(Number &other) {
+bool Number::operator==(Number& other)
+{
     if (this->num_length != other.num_length) {
         return false;
     }
@@ -166,7 +167,8 @@ bool Number::operator==(Number &other) {
     return true;
 }
 
-bool Number::operator!=(Number &other) {
+bool Number::operator!=(Number& other)
+{
     return !(*this == other);
 }
 
@@ -205,13 +207,15 @@ Number Number::operator%(int other)
     return (*this % other_number);
 }
 
-bool Number::operator==(int other) {
+bool Number::operator==(int other)
+{
     Number other_number;
     other_number = other;
     return (*this == other_number);
 }
 
-bool Number::operator!=(int other) {
+bool Number::operator!=(int other)
+{
     Number other_number;
     other_number = other;
     return (*this != other_number);
@@ -448,25 +452,29 @@ void Number::copyFrom(const Number& other)
     }
 }
 
-Number operator+(int lhs, Number &rhs) {
+Number operator+(int lhs, Number& rhs)
+{
     Number lhsNumber;
     lhsNumber = lhs;
     return lhsNumber + rhs;
 }
 
-Number operator-(int lhs, Number &rhs) {
+Number operator-(int lhs, Number& rhs)
+{
     Number lhsNumber;
     lhsNumber = lhs;
     return lhsNumber - rhs;
 }
 
-Number operator*(int lhs, Number &rhs) {
+Number operator*(int lhs, Number& rhs)
+{
     Number lhsNumber;
     lhsNumber = lhs;
     return lhsNumber * rhs;
 }
 
-Number operator/(int lhs, Number &rhs) {
+Number operator/(int lhs, Number& rhs)
+{
     Number lhsNumber;
     lhsNumber = lhs;
     return lhsNumber / rhs;
