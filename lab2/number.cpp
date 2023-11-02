@@ -184,6 +184,10 @@ bool Number::operator!=(int other) const
 
 int Number::get_trailing_zeroes() const
 {
+    if (*this == 0) {
+        return 0;
+    }
+
     int trailing_zeroes = 0;
     for (int i = tab_length - 1; i >= 0; i--) {
         if (tab_ptr[i] != 0) {
@@ -300,7 +304,7 @@ Number multiplication(Number& num1, Number& num2)
 
     for (int i = 0; i < num1.num_length; i++) {
         carry = 0;
-        for (int j = 0; j < num2.num_length || !(carry.num_length == 1 && carry.tab_ptr[0] == 0); j++) {
+        for (int j = 0; j < num2.num_length || carry != 0; j++) {
             product = result.tab_ptr[i + j] + (i < num1.num_length ? num1.tab_ptr[i] : 0) * (j < num2.num_length ? num2.tab_ptr[j] : 0);
             product = product + carry;
 
@@ -361,7 +365,7 @@ Number modulo(Number& num1, Number& num2)
     dividend.is_negative = false;
 
     // Division by 0 case
-    if (num2.num_length == 1 && num2.tab_ptr[0] == 0) {
+    if (num2 == 0) {
         return result;
     }
 
