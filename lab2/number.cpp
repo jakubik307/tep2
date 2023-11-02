@@ -245,11 +245,9 @@ Number addition(Number& num1, Number& num2)
 
     if (carry == 1) {
         result.tab_ptr[result.tab_length - 1] = 1;
-        result.set_num_length(result.tab_length);
-    } else {
-        result.set_num_length(result.tab_length - 1);
     }
 
+    result.set_num_length(result.tab_length - result.get_trailing_zeroes());
     return result;
 }
 
