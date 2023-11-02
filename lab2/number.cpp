@@ -338,7 +338,7 @@ Number division(Number& num1, Number& num2)
         return result;
     }
 
-    result = Number(0,num1.num_length);
+    result = Number(0, num1.num_length);
 
     for (int i = num1.num_length - 1; i >= 0; i--) {
         dividend = dividend * SYSTEM_BASE + num1.tab_ptr[i];
