@@ -112,7 +112,7 @@ Number Number::operator%(Number& other)
     return result;
 }
 
-bool Number::operator==(Number& other)
+bool Number::operator==(Number& other) const
 {
     if (this->num_length != other.num_length) {
         return false;
@@ -128,7 +128,7 @@ bool Number::operator==(Number& other)
     return true;
 }
 
-bool Number::operator!=(Number& other)
+bool Number::operator!=(Number& other) const
 {
     return !(*this == other);
 }
@@ -168,21 +168,21 @@ Number Number::operator%(int other)
     return (*this % other_number);
 }
 
-bool Number::operator==(int other)
+bool Number::operator==(int other) const
 {
     Number other_number;
     other_number = other;
     return (*this == other_number);
 }
 
-bool Number::operator!=(int other)
+bool Number::operator!=(int other) const
 {
     Number other_number;
     other_number = other;
     return (*this != other_number);
 }
 
-int Number::get_trailing_zeroes()
+int Number::get_trailing_zeroes() const
 {
     int trailing_zeroes = 0;
     for (int i = tab_length - 1; i >= 0; i--) {
@@ -194,7 +194,7 @@ int Number::get_trailing_zeroes()
     return trailing_zeroes;
 }
 
-std::string Number::toString()
+std::string Number::toString() const
 {
     std::string result;
     if (is_negative) {
@@ -206,7 +206,7 @@ std::string Number::toString()
     return result;
 }
 
-int Number::toInt()
+int Number::toInt() const
 {
     int result = 0;
 
@@ -339,7 +339,7 @@ Number division(Number& num1, Number& num2)
         return result;
     }
 
-    result = Number(0,num1.num_length);
+    result = Number(0, num1.num_length);
 
     for (int i = num1.num_length - 1; i >= 0; i--) {
         dividend = dividend * SYSTEM_BASE + num1.tab_ptr[i];
@@ -441,13 +441,15 @@ Number operator/(int lhs, Number& rhs)
     return lhsNumber / rhs;
 }
 
-bool operator==(int lhs, Number &rhs) {
+bool operator==(int lhs, Number& rhs)
+{
     Number lhsNumber;
     lhsNumber = lhs;
     return lhsNumber == rhs;
 }
 
-bool operator!=(int lhs, Number &rhs) {
+bool operator!=(int lhs, Number& rhs)
+{
     Number lhsNumber;
     lhsNumber = lhs;
     return lhsNumber != rhs;

@@ -14,10 +14,10 @@ public:
     // Destructor
     ~Number();
     // Getters
-    int get_trailing_zeroes();
+    int get_trailing_zeroes() const;
     // Setters
     void set_num_length(int length);
-    // Operators
+    // Number operators
     void operator=(int value);
     void operator=(const Number& other);
     Number operator+(Number& other);
@@ -25,24 +25,28 @@ public:
     Number operator*(Number& other);
     Number operator/(Number& other);
     Number operator%(Number& other);
-    bool operator==(Number& other);
-    bool operator!=(Number& other);
+    bool operator==(Number& other) const;
+    bool operator!=(Number& other) const;
+    // Int operators
     Number operator+(int other);
     Number operator-(int other);
     Number operator*(int other);
     Number operator/(int other);
     Number operator%(int other);
-    bool operator==(int other);
-    bool operator!=(int other);
+    bool operator==(int other) const;
+    bool operator!=(int other) const;
     // Other
-    int toInt();
-    std::string toString();
+    int toInt() const;
+    std::string toString() const;
 
 private:
+    // Fields
     int num_length;
     int tab_length;
     int* tab_ptr;
     bool is_negative;
+
+    // Helper methods
     void copyFrom(const Number& other);
     void assignValue(int value, int min_length);
 
@@ -52,6 +56,8 @@ private:
     friend Number division(Number& num1, Number& num2);
     friend Number modulo(Number& num1, Number& num2);
     friend int abs_comp(Number& num1, Number& num2);
+
+    //Left hand side operators
     friend Number operator+(int lhs, Number& rhs);
     friend Number operator-(int lhs, Number& rhs);
     friend Number operator*(int lhs, Number& rhs);
