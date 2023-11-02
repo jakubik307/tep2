@@ -35,7 +35,7 @@ Number::Number(int tab_length)
 
 Number::~Number()
 {
-    delete tab_ptr;
+    delete[] tab_ptr;
 }
 
 void Number::set_num_length(int length)
@@ -49,7 +49,7 @@ void Number::set_num_length(int length)
 void Number::operator=(const int value)
 {
     // Delete previous tab allocation
-    delete tab_ptr;
+    delete[] tab_ptr;
 
     // Set sign and value
     int value_copy;
@@ -88,7 +88,10 @@ void Number::operator=(const int value)
 
 void Number::operator=(const Number& other)
 {
-    copyFrom(other);
+    if (this != &other) {
+        delete[] tab_ptr;
+        copyFrom(other);
+    }
 }
 
 Number Number::operator+(Number& other)
@@ -405,9 +408,6 @@ int abs_comp(Number& num1, Number& num2)
 
 void Number::copyFrom(const Number& other)
 {
-    // Delete previous tab allocation
-    delete tab_ptr;
-
     this->num_length = other.num_length;
     this->tab_length = other.tab_length;
     this->is_negative = other.is_negative;

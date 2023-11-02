@@ -10,7 +10,7 @@ int main()
     std::cout << num2.toString() << std::endl;
 
     Number num3;
-    num3 = num1 * num2;
+    num3 = 2 + num1;
 
     std::cout << num3.toString() << std::endl;
     return 0;
