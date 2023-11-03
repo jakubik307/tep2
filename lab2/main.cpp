@@ -4,7 +4,7 @@ int main()
 {
     Number num1, num2;
     num1 = -2137;
-    num2 = 69;
+    num2 = -69;
 
     std::cout << num1.toString() << std::endl;
     std::cout << num2.toString() << std::endl;

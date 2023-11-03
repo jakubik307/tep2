@@ -108,7 +108,7 @@ Number Number::operator%(Number& other)
 {
     Number result;
     result = modulo(*this, other);
-    result.is_negative = this->is_negative != other.is_negative;
+    result.is_negative = this->is_negative || other.is_negative;
     return result;
 }
 
@@ -364,10 +364,11 @@ Number division(Number& num1, Number& num2)
 
 Number modulo(Number& num1, Number& num2)
 {
-    Number result;
-    Number dividend;
+    Number result, dividend, divisor;
     dividend = num1;
     dividend.is_negative = false;
+    divisor = num2;
+    divisor.is_negative = false;
 
     // Division by 0 case
     if (num2 == 0) {
@@ -385,7 +386,7 @@ Number modulo(Number& num1, Number& num2)
     }
 
     while (abs_comp(dividend, num2) != -1) {
-        dividend = dividend - num2;
+        dividend = dividend - divisor;
     }
 
     result = dividend;
