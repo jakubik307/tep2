@@ -370,13 +370,12 @@ Number modulo(Number& num1, Number& num2)
     }
 
     // Result equal dividend case
-    if (abs_comp(num1, num2) == -1) {
-        result = dividend;
-        return result;
+    if (abs_comp(dividend, num2) == -1) {
+        return dividend;
     }
 
     // Result equal 0 case
-    if (abs_comp(num1, num2) == 0) {
+    if (abs_comp(dividend, num2) == 0) {
         return result;
     }
 
