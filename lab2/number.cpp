@@ -359,7 +359,7 @@ Number division(Number& num1, Number& num2)
 
 Number modulo(Number& num1, Number& num2)
 {
-    Number result;
+    Number zero;
     Number dividend;
     dividend = num1;
     dividend.is_negative = false;
@@ -369,7 +369,7 @@ Number modulo(Number& num1, Number& num2)
 
     // Division by 0 case
     if (num2 == 0) {
-        return result;
+        return zero;
     }
 
     // Result equal dividend case
@@ -379,10 +379,8 @@ Number modulo(Number& num1, Number& num2)
 
     // Result equal 0 case
     if (abs_comp(dividend, num2) == 0) {
-        return result;
+        return zero;
     }
-
-    result = Number(0, num1.num_length);
 
     for (int i = num1.num_length - 1; i >= 0; i--) {
         dividend = dividend * SYSTEM_BASE + num1.tab_ptr[i];
