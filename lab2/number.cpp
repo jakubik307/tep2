@@ -108,7 +108,7 @@ Number Number::operator%(Number& other)
 {
     Number result;
     result = modulo(*this, other);
-
+    result.is_negative = this->is_negative != other.is_negative;
     return result;
 }
 
@@ -184,10 +184,6 @@ bool Number::operator!=(int other) const
 
 int Number::get_trailing_zeroes() const
 {
-    if (*this == 0) {
-        return 0;
-    }
-
     int trailing_zeroes = 0;
     for (int i = tab_length - 1; i >= 0; i--) {
         if (tab_ptr[i] != 0) {
@@ -368,17 +364,14 @@ Number division(Number& num1, Number& num2)
 
 Number modulo(Number& num1, Number& num2)
 {
-    Number zero;
+    Number result;
     Number dividend;
     dividend = num1;
     dividend.is_negative = false;
-    Number divisor;
-    divisor = num2;
-    divisor.is_negative = false;
 
     // Division by 0 case
     if (num2 == 0) {
-        return zero;
+        return result;
     }
 
     // Result equal dividend case
@@ -388,18 +381,16 @@ Number modulo(Number& num1, Number& num2)
 
     // Result equal 0 case
     if (abs_comp(dividend, num2) == 0) {
-        return zero;
+        return result;
     }
 
-    for (int i = num1.num_length - 1; i >= 0; i--) {
-        dividend = dividend * SYSTEM_BASE + num1.tab_ptr[i];
-        while (abs_comp(dividend, num2) != -1) {
-            dividend = dividend - divisor;
-        }
+    while (abs_comp(dividend, num2) != -1) {
+        dividend = dividend - num2;
     }
 
-    dividend.set_num_length(dividend.tab_length - dividend.get_trailing_zeroes());
-    return dividend;
+    result = dividend;
+    result.set_num_length(result.tab_length - result.get_trailing_zeroes());
+    return result;
 }
 
 int abs_comp(Number& num1, Number& num2)
