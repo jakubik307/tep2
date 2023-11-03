@@ -200,6 +200,11 @@ int Number::get_trailing_zeroes() const
 
 std::string Number::toString() const
 {
+    Number negative_zero = 0;
+    negative_zero.is_negative = true;
+    if (*this == 0 || *this == negative_zero) {
+        return "0";
+    }
     std::string result;
     if (is_negative) {
         result += "-";
@@ -217,6 +222,10 @@ int Number::toInt() const
     for (int i = num_length - 1; i >= 0; i--) {
         result *= SYSTEM_BASE;
         result += tab_ptr[i];
+    }
+
+    if (is_negative) {
+        result *= -1;
     }
 
     return result;
