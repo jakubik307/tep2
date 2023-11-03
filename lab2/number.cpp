@@ -326,7 +326,7 @@ Number division(Number& num1, Number& num2)
     divisor.is_negative = false;
 
     // Division by 0 case
-    if (num2.num_length == 1 && num2.tab_ptr[0] == 0) {
+    if (num2 == 0) {
         return result;
     }
 
@@ -363,6 +363,9 @@ Number modulo(Number& num1, Number& num2)
     Number dividend;
     dividend = num1;
     dividend.is_negative = false;
+    Number divisor;
+    divisor = num2;
+    divisor.is_negative = false;
 
     // Division by 0 case
     if (num2 == 0) {
@@ -379,13 +382,17 @@ Number modulo(Number& num1, Number& num2)
         return result;
     }
 
-    while (abs_comp(dividend, num2) != -1) {
-        dividend = dividend - num2;
+    result = Number(0, num1.num_length);
+
+    for (int i = num1.num_length - 1; i >= 0; i--) {
+        dividend = dividend * SYSTEM_BASE + num1.tab_ptr[i];
+        while (abs_comp(dividend, num2) != -1) {
+            dividend = dividend - divisor;
+        }
     }
 
-    result = dividend;
-    result.set_num_length(result.tab_length - result.get_trailing_zeroes());
-    return result;
+    dividend.set_num_length(dividend.tab_length - dividend.get_trailing_zeroes());
+    return dividend;
 }
 
 int abs_comp(Number& num1, Number& num2)
