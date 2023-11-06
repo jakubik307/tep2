@@ -101,7 +101,7 @@ Number Number::operator/(Number& other)
     try {
         result = division(*this, other);
         result.is_negative = this->is_negative != other.is_negative;
-    } catch(std::invalid_argument& e) {
+    } catch (std::invalid_argument& e) {
         std::cerr << e.what() << std::endl;
     }
 
@@ -111,8 +111,10 @@ Number Number::operator/(Number& other)
 Number Number::operator%(Number& other)
 {
     Number result;
+    Number* div_result;
+
     try {
-        result = modulo(*this, other);
+        result = mod(other, &div_result);
         result.is_negative = this->is_negative || other.is_negative;
     } catch (std::invalid_argument& e) {
         std::cerr << e.what() << std::endl;
@@ -220,6 +222,14 @@ std::string Number::toString() const
     return result;
 }
 
+Number Number::mod(Number& other, Number** div_result)
+{
+    Number result;
+    *div_result = new Number(0);
+    result = mod_division(*this, other, **div_result);
+    return result;
+}
+
 int Number::toInt() const
 {
     int result = 0;
@@ -315,6 +325,7 @@ Number multiplication(Number& num1, Number& num2)
     Number temp;
     Number carry;
     Number product;
+    Number sys_base_number = SYSTEM_BASE;
 
     for (int i = 0; i < num1.num_length; i++) {
         carry = 0;
@@ -322,7 +333,7 @@ Number multiplication(Number& num1, Number& num2)
             product = result.tab_ptr[i + j] + (i < num1.num_length ? num1.tab_ptr[i] : 0) * (j < num2.num_length ? num2.tab_ptr[j] : 0);
             product = product + carry;
 
-            result.tab_ptr[i + j] = (product % SYSTEM_BASE).toInt();
+            result.tab_ptr[i + j] = (simpleMod(product, sys_base_number)).toInt();
             carry = product / SYSTEM_BASE;
         }
     }
@@ -331,7 +342,7 @@ Number multiplication(Number& num1, Number& num2)
     return result;
 }
 
-Number division(Number& num1, Number& num2)
+Number mod_division(Number& num1, Number& num2, Number& div_result)
 {
     Number result;
     Number dividend;
@@ -367,11 +378,21 @@ Number division(Number& num1, Number& num2)
         result.tab_ptr[i] = quotient_digit;
     }
 
+    dividend.set_num_length(dividend.tab_length - dividend.get_trailing_zeroes());
     result.set_num_length(result.tab_length - result.get_trailing_zeroes());
+    div_result = result;
+    return dividend;
+}
+
+Number division(Number& num1, Number& num2)
+{
+    Number result;
+    Number modulo;
+    mod_division(num1, num2, result);
     return result;
 }
 
-Number modulo(Number& num1, Number& num2)
+Number simpleMod(Number& num1, Number& num2)
 {
     Number result, dividend, divisor;
     dividend = num1;

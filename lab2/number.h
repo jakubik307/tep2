@@ -38,6 +38,7 @@ public:
     // Other
     int toInt() const;
     std::string toString() const;
+    Number mod(Number& other, Number** result);
 
 private:
     // Fields
@@ -54,10 +55,11 @@ private:
     friend Number subtraction(Number& num1, Number& num2, bool& change_sign);
     friend Number multiplication(Number& num1, Number& num2);
     friend Number division(Number& num1, Number& num2);
-    friend Number modulo(Number& num1, Number& num2);
+    friend Number mod_division(Number& num1, Number& num2, Number& mod);
+    friend Number simpleMod(Number& num1, Number& num2);
     friend int abs_comp(Number& num1, Number& num2);
 
-    //Left hand side operators
+    // Left hand side operators
     friend Number operator+(int lhs, Number& rhs);
     friend Number operator-(int lhs, Number& rhs);
     friend Number operator*(int lhs, Number& rhs);
