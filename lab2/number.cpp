@@ -36,10 +36,9 @@ Number::~Number()
 
 void Number::set_num_length(int length)
 {
-    if (length <= 0) {
-        length = 1;
+    if (length > 0 && length <= tab_length) {
+        num_length = length;
     }
-    num_length = length;
 }
 
 void Number::operator=(int value)
@@ -99,16 +98,26 @@ Number Number::operator*(Number& other)
 Number Number::operator/(Number& other)
 {
     Number result;
-    result = division(*this, other);
-    result.is_negative = this->is_negative != other.is_negative;
+    try {
+        result = division(*this, other);
+        result.is_negative = this->is_negative != other.is_negative;
+    } catch(std::invalid_argument& e) {
+        std::cerr << e.what() << std::endl;
+    }
+
     return result;
 }
 
 Number Number::operator%(Number& other)
 {
     Number result;
-    result = modulo(*this, other);
-    result.is_negative = this->is_negative || other.is_negative;
+    try {
+        result = modulo(*this, other);
+        result.is_negative = this->is_negative || other.is_negative;
+    } catch (std::invalid_argument& e) {
+        std::cerr << e.what() << std::endl;
+    }
+
     return result;
 }
 
@@ -332,7 +341,7 @@ Number division(Number& num1, Number& num2)
 
     // Division by 0 case
     if (num2 == 0) {
-        return result;
+        throw std::invalid_argument("Division by 0 is forbidden");
     }
 
     // Result equal 0 case
