@@ -355,17 +355,6 @@ Number mod_division(Number& num1, Number& num2, Number& div_result)
         throw std::invalid_argument("Division by 0 is forbidden");
     }
 
-    // Result equal 0 case
-    if (abs_comp(num1, num2) == -1) {
-        return result;
-    }
-
-    // Result equal 1 case
-    if (abs_comp(num1, num2) == 0) {
-        result = 1;
-        return result;
-    }
-
     result = Number(0, num1.num_length);
 
     for (int i = num1.num_length - 1; i >= 0; i--) {
